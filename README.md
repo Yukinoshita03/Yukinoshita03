@@ -67,10 +67,31 @@
 
 ## 最近在做
 
+- 做一个偏系统和基础设施方向的开源项目：[vnet-dataplane](https://github.com/Yukinoshita03/vnet-dataplane)。它面向 Linux 虚拟化网络路径，使用 eBPF / XDP / tc 观测 `veth`、`tap`、`bridge`、`OVS` 等路径上的 DNS、gRPC 和 TCP/UDP 流量，并尝试在可控场景下做轻量快路径优化。
 - 研究 **gVisor / sandbox** 场景下的异步 I/O，尤其是它的边界和退化条件。
 - 整理 **论文实验** 和 **benchmark harness**，把每个结论都落到可复现的数据上。
 - 读 **容器运行时**、**文件系统**、**存储系统** 的实现，顺手理解它们为什么会那样工作。
 - 把实验结果整理成能复现、能解释、也能顺利写进论文的形式。
+
+## 正在维护的项目
+
+### [vnet-dataplane](https://github.com/Yukinoshita03/vnet-dataplane)
+
+一个面向 Linux 虚拟化网络路径的 eBPF 观测与轻量加速项目。
+
+- 发现 `veth`、`tap`、`bridge`、`OVS` 等虚拟化网络路径和候选挂载点。
+- 观测 DNS、gRPC、TCP/UDP 流量，输出路径、延迟、服务分类和 eBPF 挂载状态。
+- 提供 DNS XDP cache、gRPC fast-cache、`netns + bridge + veth` benchmark 等实验能力。
+- 保留虚拟网卡驱动和 C++ userspace dataplane 作为底层实验组件。
+
+<div align="center">
+
+![C++](https://img.shields.io/badge/C++20-00599C?style=flat-square&logo=cplusplus&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-networking-FCC624?style=flat-square&logo=linux&logoColor=111827)
+![eBPF](https://img.shields.io/badge/eBPF-XDP%20%2F%20tc-111827?style=flat-square&logo=linux&logoColor=white)
+![Infrastructure](https://img.shields.io/badge/Infrastructure-observability%20%26%20acceleration-e7d9ff?style=flat-square)
+
+</div>
 
 ## 我常用的技术
 
@@ -79,6 +100,7 @@
 ![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=111827)
 ![C](https://img.shields.io/badge/C-1f2937?style=for-the-badge&logo=c&logoColor=white)
+![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![eBPF](https://img.shields.io/badge/eBPF-111827?style=for-the-badge&logo=linux&logoColor=white)
