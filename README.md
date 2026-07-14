@@ -44,16 +44,6 @@ I care about clear boundaries, measurable behavior, safe fallback paths, and exp
 - Provides controlled DNS XDP cache and gRPC fast-cache prototypes.
 - Includes reproducible `netns + bridge + veth` benchmarks, a C++20 userspace dataplane, and a minimal virtual NIC driver.
 
-### XDP IPIP Overlay
-
-I am also developing an XDP-based Kubernetes CNI research prototype. Its dataplane handles same-node and cross-node Pod forwarding, IPIP encapsulation, ClusterIP load balancing, SNAT, connection tracking, and cached fast-path forwarding. A Go control plane reconciles Kubernetes resources into BPF maps without reloading the dataplane.
-
-## Earlier Explorations
-
-- [gocker](https://github.com/Yukinoshita03/gocker): a small container runtime implemented in Go.
-- [mygoai](https://github.com/Yukinoshita03/mygoai): experiments with building an AI agent in Go.
-- [ding-code](https://github.com/Yukinoshita03/ding-code): a Go microservice-based coding-agent experiment.
-
 ## Toolbox
 
 <div align="center">
