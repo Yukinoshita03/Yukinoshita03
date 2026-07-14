@@ -1,113 +1,78 @@
 <div align="center">
-  <table>
-    <tr>
-      <td width="280" align="center" valign="middle">
-        <img src="./assets/yukino-source.png" width="260" alt="Yukinoshita Yukino illustration" />
-      </td>
-      <td align="left" valign="middle">
-        <h1>Shuka</h1>
-        <p>
-          I am a first-year graduate student at <b>Guilin University of Electronic Technology</b>.<br/>
-          I come from <b>Chengdu, Sichuan</b>.<br/>
-          I focus on systems, infrastructure, and the small details that decide whether an experiment is actually reproducible.
-        </p>
-        <p>
-          <sub>If I have to introduce myself, I prefer to keep it precise.</sub>
-        </p>
-      </td>
-    </tr>
-  </table>
+  <a href="https://github.com/Kumampet/Aqours5thaniv">
+    <img src="https://raw.githubusercontent.com/Kumampet/Aqours5thaniv/master/img/top_mamber.png" width="760" alt="Aqours" />
+  </a>
+
+  <h1>Hi, I'm Shuka</h1>
+
+  <p>
+    Graduate student at <b>Guilin University of Electronic Technology</b><br />
+    Linux Networking · eBPF/XDP · Virtualized Dataplanes · C++ Systems
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Focus-Linux%20Dataplanes-0f766e?style=flat-square" alt="Linux Dataplanes" />
+    <img src="https://img.shields.io/badge/Research-eBPF%20%2F%20XDP-111827?style=flat-square" alt="eBPF and XDP" />
+    <img src="https://img.shields.io/badge/Engineering-Reproducible-2563eb?style=flat-square" alt="Reproducible Engineering" />
+  </p>
 </div>
-
-<div align="center">
-  <img src="https://img.shields.io/badge/Focus-Systems%20%26%20Infrastructure-f6cfe0?style=flat-square" />
-  <img src="https://img.shields.io/badge/Style-Quiet%20%26%20Precise-c8d8ff?style=flat-square" />
-  <img src="https://img.shields.io/badge/Approach-Readable%20%26%20Reproducible-e7d9ff?style=flat-square" />
-</div>
-
-<br />
-
-> I care about careful engineering, reproducible results, and explanations that do not hide the cost.
 
 ## About Me
 
-- Interested in **Linux, containers, storage, networking, and system performance**.
-- Mainly write **Go**, and also use **C / C++ / Python / Shell** for tools and experiments.
-- Prefer reproducible measurements over vague claims.
-- Usually start from boundaries, tradeoffs, and failure cases before talking about results.
-- I like quiet pages, clear code, and projects that can be run again by someone else.
+I am a first-year graduate student at **Guilin University of Electronic Technology**, originally from Chengdu, Sichuan. My current work sits at the intersection of kernel networking, cloud-native infrastructure, and performance engineering.
 
-## Currently Working On
+I am interested in a simple systems question: **how does a packet actually move through a virtualized host, and where can that path be observed or accelerated without making it unsafe?** I use Linux, eBPF/XDP, C/C++, and Go to build small, testable dataplanes around that question.
 
-- Building [vnet-dataplane](https://github.com/Yukinoshita03/vnet-dataplane), a systems and infrastructure project for Linux virtualized network path observability and lightweight eBPF acceleration.
-- Studying asynchronous I/O in **gVisor / sandbox** scenarios, especially boundary conditions and fallback paths.
-- Organizing **paper experiments** and benchmark harnesses so that claims are backed by reproducible data.
-- Reading implementations of **container runtimes**, **file systems**, and **storage systems** to understand why they are shaped the way they are.
+I care about clear boundaries, measurable behavior, safe fallback paths, and experiments that someone else can reproduce.
 
-## Maintained Project
+## What I Am Researching
+
+- **eBPF/XDP dataplanes** for container and virtualized networking.
+- **Packet-path observability** across `veth`, `tap`, Linux bridge, and OVS in KVM, OpenStack, and Kubernetes environments.
+- **Kubernetes CNI fast paths**, including local and cross-node Pod forwarding, IPIP encapsulation, Service load balancing, SNAT, and connection tracking.
+- **C++20 userspace packet processing** and a minimal Linux virtual NIC driver as lower-level dataplane components.
+- **Reproducible network benchmarks** that make correctness, latency, and fallback behavior visible.
+
+## Current Work
 
 ### [vnet-dataplane](https://github.com/Yukinoshita03/vnet-dataplane)
 
-`vnet-dataplane` is a Linux eBPF agent for virtualized network path observability and lightweight service acceleration.
+`vnet-dataplane` is a Linux eBPF agent for virtualized network-path observability and lightweight service acceleration.
 
-- Discovers virtualized network paths and candidate eBPF attach points such as `veth`, `tap`, `bridge`, and `OVS`.
-- Observes DNS, gRPC, TCP, and UDP traffic with path, latency, service classification, and attach-status output.
-- Provides DNS XDP cache, gRPC fast-cache, and `netns + bridge + veth` benchmark prototypes.
-- Keeps a virtual NIC driver and C++ userspace dataplane as lower-level experimental components.
+- Discovers packet paths and candidate attach points across `veth`, `tap`, bridge, and OVS.
+- Observes DNS, gRPC, TCP, and UDP traffic with path, latency, service classification, and attach-status information.
+- Provides controlled DNS XDP cache and gRPC fast-cache prototypes.
+- Includes reproducible `netns + bridge + veth` benchmarks, a C++20 userspace dataplane, and a minimal virtual NIC driver.
 
-<div align="center">
+### XDP IPIP Overlay
 
-![C++](https://img.shields.io/badge/C++20-00599C?style=flat-square&logo=cplusplus&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-networking-FCC624?style=flat-square&logo=linux&logoColor=111827)
-![eBPF](https://img.shields.io/badge/eBPF-XDP%20%2F%20tc-111827?style=flat-square&logo=linux&logoColor=white)
-![Infrastructure](https://img.shields.io/badge/Infrastructure-observability%20%26%20acceleration-e7d9ff?style=flat-square)
+I am also developing an XDP-based Kubernetes CNI research prototype. Its dataplane handles same-node and cross-node Pod forwarding, IPIP encapsulation, ClusterIP load balancing, SNAT, connection tracking, and cached fast-path forwarding. A Go control plane reconciles Kubernetes resources into BPF maps without reloading the dataplane.
 
-</div>
+## Earlier Explorations
 
-## Yukino Fragments
+- [gocker](https://github.com/Yukinoshita03/gocker): a small container runtime implemented in Go.
+- [mygoai](https://github.com/Yukinoshita03/mygoai): experiments with building an AI agent in Go.
+- [ding-code](https://github.com/Yukinoshita03/ding-code): a Go microservice-based coding-agent experiment.
 
-<div align="center">
-  <img src="./assets/gifs/yukino-1.gif" width="220" alt="Yukino gif 1" />
-  <img src="./assets/gifs/yukino-2.gif" width="220" alt="Yukino gif 2" />
-  <img src="./assets/gifs/yukino-3.gif" width="220" alt="Yukino gif 3" />
-</div>
-
-<div align="center">
-  <sub>Quiet, restrained, but not empty.</sub>
-</div>
-
-## Reol
-
-<div align="center">
-  <img src="https://i.makeagif.com/media/4-19-2026/qI99YS.gif" width="260" alt="Reol MV clip" />
-</div>
-
-<div align="center">
-  <sub>I like Reol, especially the clean and sharp tension in these short clips.</sub>
-</div>
-
-## Tech I Use
+## Toolbox
 
 <div align="center">
 
+![C++](https://img.shields.io/badge/C++20-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
+![C](https://img.shields.io/badge/C-A8B9CC?style=for-the-badge&logo=c&logoColor=111827)
 ![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=111827)
-![C](https://img.shields.io/badge/C-1f2937?style=for-the-badge&logo=c&logoColor=white)
-![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![eBPF](https://img.shields.io/badge/eBPF%20%2F%20XDP-111827?style=for-the-badge&logo=linux&logoColor=white)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
-![eBPF](https://img.shields.io/badge/eBPF-111827?style=for-the-badge&logo=linux&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![CMake](https://img.shields.io/badge/CMake-064F8C?style=for-the-badge&logo=cmake&logoColor=white)
 
 </div>
 
-## Current State
+## Current Direction
 
-- Continuing systems research and infrastructure engineering practice.
-- Keeping experiments reproducible, explainable, and reviewable.
-- Building projects with a bias toward clear boundaries and measurable behavior.
-- Not loud, but still moving.
+I am working toward systems and infrastructure engineering roles where Linux internals, network dataplanes, and performance-sensitive C++ matter. For now, the goal is to keep building, measuring, and turning low-level experiments into software that is understandable and repeatable.
 
 <div align="center">
-  <sub>Slow progress is still progress, as long as it is real.</sub>
+  <sub>I like Aqours. Their energy is a good reminder that meaningful progress is built one step at a time.</sub>
 </div>
