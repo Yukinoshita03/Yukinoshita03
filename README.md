@@ -3,7 +3,7 @@
     <img src="https://raw.githubusercontent.com/Kumampet/Aqours5thaniv/master/img/top_mamber.png" width="760" alt="Aqours" />
   </a>
 
-  <h1>Hi, I'm Shuka</h1>
+  <h1>Hi, I'm Kaiwen Tan</h1>
 
   <p>
     Graduate student at <b>Guilin University of Electronic Technology</b><br />
