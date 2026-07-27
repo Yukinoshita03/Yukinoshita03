@@ -31,9 +31,7 @@
 
 ## 研究方向
 
-- 面向容器与虚拟化网络的 **eBPF/XDP 数据面**。
 - KVM、OpenStack 和 Kubernetes 环境中跨 `veth`、`tap`、Linux Bridge 与 OVS 的**数据包路径观测**。
-- **Kubernetes CNI 快速路径**，包括 Pod 本地与跨节点转发、IPIP 封装、Service 负载均衡、SNAT 和连接跟踪。
 - **C++20 用户态数据包处理**以及用于理解内核收发路径的最小 Linux 虚拟网卡驱动。
 - 能够呈现正确性、时延和回退行为的**可复现网络基准测试**。
 - 小型关系型数据库的存储、索引和查询执行机制。
