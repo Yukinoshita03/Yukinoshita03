@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/Yukinoshita03/Yukinoshita03">
-    <img src="./assets/yukino-2.gif" width="760" alt="雪之下雪乃" />
+    <img src="./assets/yukino-code-hero-4k.png" width="760" alt="雪之下雪乃在深夜写代码" />
   </a>
 
   <h1>你好，我是谭开文</h1>
@@ -24,43 +24,76 @@
 
 ## 关于我
 
-我来自四川成都，现在是桂林电子科技大学研二。平时电脑上常年开着几台
-虚拟机、几个终端和一堆抓包窗口，研究的东西基本都绕不开 Linux 网络、
-云原生基础设施和性能敏感的 C++。
+我来自四川成都，现在在桂林电子科技大学读研二。主要做 Linux 网络、
+eBPF/XDP、虚拟化数据面和性能敏感的 C++ 系统。
 
-我很容易被一个问题拽住：**一个包到底是怎么走到目的地的？** 它可能先经过
-`virtio`、`tap`、`veth`、Bridge、OVS，再套上一层 VXLAN/Geneve，最后才到
-真实网卡。我喜欢把这条路径一段段拆开，找到可以观测、验证、也确实值得
-加速的位置。
+我平时最关心的是一个很具体的问题：**一个数据包从虚拟机或容器出来以后，
+究竟经过了哪些设备？** 它可能先走 `virtio`、`tap`、`veth`、Bridge 和
+OVS，再套上 VXLAN/Geneve，最后才到物理网卡。我喜欢顺着这条路径查下去，
+弄清楚每一层做了什么、哪里出了问题，以及哪些位置真的值得加速。
 
-最近一段时间，我把 `vnet-dataplane` 里的 eBPF/XDP 实验往物理网卡推进，
-单独做了 `r8169-native-xdp`：从 RX buffer 所有权、page-pool 和 DMA 同步，
-一路写到 TX completion 和 `XDP_TX`，最后在真实网卡上把 DNS cache 的
-`1024/1024` 外部请求跑通。
+最近我把 `vnet-dataplane` 里的 eBPF/XDP 实验继续往物理网卡推进，单独做了
+`r8169-native-xdp`。从 RX buffer 的生命周期、page-pool、DMA 同步，到 TX
+completion 和 `XDP_TX`，这些细节都要自己弄明白；最后也确实在真实网卡上把
+DNS cache 的 `1024/1024` 个外部请求跑通了。
 
-我不太满足于“程序能编译”或“veth 里能通”。我更想知道它在真实路径上是否
-成立、哪里会断、断了之后能不能解释清楚，所以会把构建输入、测试命令、
-计数器和失败边界一起留下来。
+我不太喜欢只写一句“已经跑通”。通常会把数据包路径、测试命令、驱动计数器
+和失败场景一起记下来，确认它为什么能跑、什么时候会停，以及出了问题该从
+哪里恢复。
+
+## 研究方向
+
+我现在主要在看三条线：
+
+- **Linux 内核网络和网卡驱动**：关注 RX/TX、DMA、page-pool、NAPI、驱动
+  生命周期，以及 Native XDP 在真实网卡上到底怎样工作；
+- **eBPF/XDP 数据面**：做 DNS cache、流量观测和窄范围的快速路径，比较
+  tc、generic XDP 和 native XDP 在不同挂载点上的差别；
+- **虚拟化和云原生网络**：分析 KVM、OpenStack、Kubernetes、OVS 里的
+  `virtio`、`tap`、`veth`、VXLAN/Geneve、qrouter 等路径。
+
+另外我也在用 C++ 学习数据库的存储、索引和查询执行，这就是
+[MiniRedBase](https://github.com/Yukinoshita03/MiniRedBase) 这条线。
+
+## 想找的工作
+
+我希望找 Linux 内核网络、eBPF/XDP、网卡驱动、云原生基础设施或高性能
+C++ 系统研发相关的岗位。
+
+我更偏向底层和基础设施方向：能接触真实机器和数据面，能写代码，也能花
+时间测量性能、分析故障和把问题讲清楚。如果工作内容既有工程落地，也有
+一点系统研究和实验空间，就很适合我。
+
+## 语言和技术栈
+
+- **最常用的语言**：C/C++（主要写 C++20）、Go、Python；
+- **正在学习**：Rust，希望以后用它补充系统工具和基础设施开发；
+- **系统与网络**：Linux、KVM、eBPF/XDP、TC、NAPI、网卡驱动、OVS、
+  OpenStack、Kubernetes、Docker；
+- **工程工具**：CMake、Make、Git、GDB、Clang/GCC、Shell，以及可复现的
+  netns/bridge/veth 测试环境。
 
 ## 最近在做
 
-- **最近最上头的是 Native XDP 网卡驱动**：把 `r8169` 改造成可编译的外置
-  `r8169_xdp.ko`，一路处理 `XDP_PASS`、`DROP`、`ABORTED`、非法 action、
-  `adjust_tail(+16)` 和同设备 `XDP_TX`。
-- **DNS eBPF 加速**：服务端/客户端缓存、pending flow、TTL、可信 DNS server
-  和 ringbuf 事件都在做，顺便比较 tc、generic XDP 和 native XDP 到底差在哪。
-- **虚拟化网络路径**：在 OpenStack、KVM、Kubernetes、OVS 环境里追
-  `virtio-net`、`tap`、`veth`、Bridge、Geneve/VXLAN 和 qrouter 的转发关系。
-- **把验收做得像验收**：用外部 peer、驱动计数器、carrier 和普通连通性，
-  确认流量真的走过物理 RX/TX，而不是只在 veth 或 VM 里“看起来成功”。
+最近主要在做几件事：
+
+- 把 `r8169` 改造成可编译的外置 `r8169_xdp.ko`，把 `XDP_PASS`、`DROP`、
+  `ABORTED`、非法 action、`adjust_tail(+16)` 和同设备 `XDP_TX` 这些路径
+  真正跑到物理网卡上；
+- 做 DNS eBPF cache，包括客户端/服务端缓存、pending flow、TTL、可信 DNS
+  server 和 ringbuf 事件，并比较 tc、generic XDP 和 native XDP 的差异；
+- 在 OpenStack、KVM、Kubernetes、OVS 环境里追踪 `virtio-net`、`tap`、`veth`、
+  Bridge、Geneve/VXLAN 和 qrouter 的转发关系；
+- 用外部 peer、驱动计数器、carrier 和普通连通性确认流量确实经过了物理
+  RX/TX，而不是只在 veth 或虚拟机里得到一个“看起来成功”的结果。
 
 ## 项目
 
 ### [r8169-native-xdp](https://github.com/Yukinoshita03/r8169-native-xdp)
 
-这是我最近单独拆出来的仓库：面向 Linux `r8169` 的 Native XDP 外置驱动补丁
-和源码。最开始只是想让 XDP 在物理网卡上真正跑起来，后来发现真正麻烦的
-是 buffer ownership、DMA、TX ring 和 reset 这些细节。
+这是我最近单独拆出来的仓库，放的是 Linux `r8169` 的 Native XDP 外置驱动
+补丁和源码。最开始只是想验证 XDP 能不能在物理网卡上真正跑起来，做到后面
+才发现最费时间的是 buffer ownership、DMA、TX ring 和 reset 这些细节。
 
 - 基于 Linux 7.2-rc6 提供 Native XDP RX/TX 核心补丁；
 - 提供 Ubuntu 7.0 目标 ABI 的兼容、显式 PCI/BDF 保护和故障注入补丁；
@@ -71,7 +104,7 @@
 
 ### [vnet-dataplane](https://github.com/Yukinoshita03/vnet-dataplane)
 
-这是主线项目，也是很多实验的起点。它是一个面向虚拟化网络路径观测和轻量
+这是我的主线项目，也是很多实验的起点：一个面向虚拟化网络路径观测和轻量
 服务加速的 Linux eBPF Agent。
 
 - 发现并记录 `veth`、`tap`、Bridge、OVS 等虚拟路径和候选挂载点；
@@ -83,7 +116,7 @@
 
 ### [MiniRedBase](https://github.com/Yukinoshita03/MiniRedBase)
 
-这是另一条线：一个正在开发中的现代 C++ 教学关系型数据库，架构参考
+这是另一条线，一个正在开发中的现代 C++ 教学关系型数据库，架构参考
 Stanford RedBase，工程组织参考 OceanBase MiniOB。
 
 - 使用 C++20、CMake 和跨平台 CI；
@@ -112,14 +145,20 @@ Stanford RedBase，工程组织参考 OceanBase MiniOB。
 我想继续沿着系统与基础设施这条路走下去，把 Linux 网络栈、网卡驱动、
 eBPF/XDP、OpenStack/Kubernetes 数据面和 C++ 系统真正串起来。
 
-接下来会继续折腾：
+接下来还会继续做：
 
 - `r8169_xdp` 的多轮 attach/detach、reset、link flap 和长时间压力验证；
 - TX ring 满、RX refill 失败、DROP/ABORTED/invalid action 等故障路径；
 - 物理网卡 Native XDP 与 OVS/tap/veth 观测面的边界；
-- 可公开复现的构建、测试和性能数据。希望以后别人 clone 下来，也能知道我
-  当时到底测了什么，而不是只能看一张漂亮的结果截图。
+- 可公开复现的构建、测试和性能数据。以后别人 clone 下来，至少能看懂我
+  当时测了什么，而不是只能看到一张结果截图。
+
+## 喜欢的动漫
+
+我喜欢《Re:从零开始的异世界生活》（Re:Zero）和《我的青春恋爱物语果然有
+问题》（春物），尤其喜欢雪之下雪乃。写代码写累了会看几集，或者把它们
+当作深夜调试时的背景音。
 
 <div align="center">
-  <sub>我喜欢 Aqours。真正有意义的进步，往往也是一步一步积累出来的。</sub>
+  <sub>慢一点没关系，先把问题弄明白，再把它做出来。</sub>
 </div>

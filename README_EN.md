@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/Yukinoshita03/Yukinoshita03">
-    <img src="./assets/yukino-2.gif" width="760" alt="Yukino Yukinoshita" />
+    <img src="./assets/yukino-code-hero-4k.png" width="760" alt="Yukino Yukinoshita programming at night" />
   </a>
 
   <h1>Hi, I'm Kaiwen Tan</h1>
@@ -46,6 +46,39 @@ I am not very satisfied with “it compiles” or “it works in a veth namespac
 want to know whether it holds on the real path, where it breaks, and whether the
 breakage can be explained. That is why I keep the build inputs, test commands,
 counters, and failure boundaries with the result.
+
+## Research Areas
+
+I am mainly working along three connected tracks:
+
+- **Linux kernel networking and NIC drivers**: RX/TX, DMA, page pools, NAPI,
+  driver lifecycles, and what Native XDP actually does on a real adapter;
+- **eBPF/XDP dataplanes**: DNS caching, traffic observability, and narrow fast
+  paths, with comparisons between tc, generic XDP, and native XDP;
+- **Virtualized and cloud-native networking**: KVM, OpenStack, Kubernetes, OVS,
+  `virtio`, `tap`, `veth`, VXLAN/Geneve, and router namespaces.
+
+I also use C++ to study storage, indexing, and query execution through
+[MiniRedBase](https://github.com/Yukinoshita03/MiniRedBase).
+
+## Roles I Am Looking For
+
+I am looking for roles involving Linux kernel networking, eBPF/XDP, NIC drivers,
+cloud-native infrastructure, or high-performance C++ systems.
+
+I prefer low-level infrastructure work where I can touch real machines and
+dataplanes, write production code, measure performance, and investigate failure
+modes. A team that combines engineering delivery with room for systems research
+and experiments would be a particularly good fit.
+
+## Languages and Toolbox
+
+- **Most used**: C/C++ (mostly C++20), Go, and Python;
+- **Currently learning**: Rust, especially for systems tools and infrastructure;
+- **Systems and networking**: Linux, KVM, eBPF/XDP, TC, NAPI, NIC drivers, OVS,
+  OpenStack, Kubernetes, and Docker;
+- **Engineering tools**: CMake, Make, Git, GDB, Clang/GCC, Shell, and reproducible
+  `netns`/bridge/`veth` test environments.
 
 ## Recent Work
 
@@ -141,6 +174,12 @@ Next I want to keep digging into:
   a project later, I want them to know what I actually measured—not just see a
   polished result screenshot.
 
+## Anime I Like
+
+I like *Re:ZERO -Starting Life in Another World-* and *My Youth Romantic Comedy
+Is Wrong, As I Expected* (Oregairu), especially Yukino Yukinoshita. They are
+good background company for late-night debugging sessions.
+
 <div align="center">
-  <sub>I like Aqours. Meaningful progress is built one step at a time.</sub>
+  <sub>It is fine to move slowly; understand the problem first, then build it.</sub>
 </div>
