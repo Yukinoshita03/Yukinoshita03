@@ -1,6 +1,6 @@
 <div align="center">
-  <a href="https://github.com/Kumampet/Aqours5thaniv">
-    <img src="https://raw.githubusercontent.com/Kumampet/Aqours5thaniv/master/img/top_mamber.png" width="760" alt="Aqours" />
+  <a href="https://github.com/Yukinoshita03/Yukinoshita03">
+    <img src="./assets/yukino-2.gif" width="760" alt="Yukino Yukinoshita" />
   </a>
 
   <h1>Hi, I'm Kaiwen Tan</h1>
@@ -25,30 +25,33 @@
 ## About Me
 
 I am a second-year graduate student at **Guilin University of Electronic
-Technology**, originally from Chengdu, Sichuan. My work focuses on Linux kernel
-networking, physical-NIC dataplanes, cloud-native infrastructure, and systems
-performance.
+Technology**, originally from Chengdu, Sichuan. My laptop usually has a few VMs,
+too many terminals, and at least one packet capture open. Most of what I work on
+comes back to Linux networking, cloud-native infrastructure, and performance-
+sensitive C++.
 
-I like following a packet through its complete lifecycle: from a VM or
-container, through `virtio`, `tap`, `veth`, Linux bridge, OVS, and VXLAN/Geneve,
-to the physical NIC—and then asking where that path can be observed, verified,
-or accelerated without losing control of its failure modes.
+I keep getting pulled into one question: **how does a packet actually get where
+it is going?** It may cross `virtio`, `tap`, `veth`, a bridge, and OVS, pick up a
+VXLAN/Geneve envelope, and only then reach the physical NIC. I like taking that
+path apart, finding the places that are observable, verifiable, and genuinely
+worth accelerating.
 
-Recently I moved from eBPF programs and virtual-path observability in
-`vnet-dataplane` to an out-of-tree Native-XDP `r8169` driver. That work involves
-RX-buffer ownership, page pools, DMA synchronization, TX completion, and
-same-device `XDP_TX`, with a physical DNS-cache validation run reaching
-1024/1024 external replies.
+Recently I pushed the eBPF/XDP experiments in `vnet-dataplane` down to a physical
+NIC and split the driver work into `r8169-native-xdp`. That meant following RX
+buffer ownership, page pools, DMA synchronization, TX completion, and `XDP_TX`
+all the way through, then running 1024/1024 external DNS-cache requests on real
+hardware.
 
-I care about clear boundaries, measurable behavior, reproducible experiments,
-and explicit recovery conditions for experiments that can interrupt a network
-interface.
+I am not very satisfied with “it compiles” or “it works in a veth namespace.” I
+want to know whether it holds on the real path, where it breaks, and whether the
+breakage can be explained. That is why I keep the build inputs, test commands,
+counters, and failure boundaries with the result.
 
 ## Recent Work
 
-- **Native-XDP NIC driver**: extending `r8169` into a buildable external
-  `r8169_xdp.ko` with `XDP_PASS`, `DROP`, `ABORTED`, invalid-action handling,
-  `adjust_tail(+16)`, and same-device `XDP_TX`.
+- **The Native-XDP NIC driver is currently the rabbit hole**: extending `r8169`
+  into a buildable external `r8169_xdp.ko` with `XDP_PASS`, `DROP`, `ABORTED`,
+  invalid-action handling, `adjust_tail(+16)`, and same-device `XDP_TX`.
 - **DNS eBPF acceleration**: server/client caches, pending flows, TTLs, trusted
   DNS servers, ring-buffer events, and comparisons between tc, generic XDP, and
   native XDP paths.
@@ -63,7 +66,9 @@ interface.
 
 ### [r8169-native-xdp](https://github.com/Yukinoshita03/r8169-native-xdp)
 
-An out-of-tree Native-XDP patch set and source repository for Linux `r8169`.
+This is the repository I recently split out for the Linux `r8169` Native-XDP
+driver. It started as “make XDP really run on a physical NIC” and quickly became
+an exercise in buffer ownership, DMA, TX rings, and reset paths.
 
 - Core Native-XDP RX/TX patches based on Linux 7.2-rc6;
 - Ubuntu 7.0 target-ABI compatibility, explicit PCI/BDF protection, and
@@ -77,7 +82,8 @@ An out-of-tree Native-XDP patch set and source repository for Linux `r8169`.
 
 ### [vnet-dataplane](https://github.com/Yukinoshita03/vnet-dataplane)
 
-A Linux eBPF agent for virtualized network-path observability and lightweight
+This is the main project and the starting point for most of the experiments: a
+Linux eBPF agent for virtualized network-path observability and lightweight
 service acceleration.
 
 - Discovers packet paths and candidate attach points across `veth`, `tap`,
@@ -92,7 +98,8 @@ service acceleration.
 
 ### [MiniRedBase](https://github.com/Yukinoshita03/MiniRedBase)
 
-A modern C++ educational relational database under development, inspired by
+This is a separate track: a modern C++ educational relational database under
+development, inspired by
 Stanford RedBase and organized with lessons from OceanBase MiniOB.
 
 - C++20, CMake, and cross-platform CI;
@@ -120,17 +127,19 @@ Stanford RedBase and organized with lessons from OceanBase MiniOB.
 
 ## Current Direction
 
-I am working toward systems and infrastructure engineering roles where Linux
-networking internals, NIC drivers, eBPF/XDP, OpenStack/Kubernetes dataplanes,
-and performance-sensitive C++ matter.
+I want to keep following the systems and infrastructure path, and connect Linux
+networking internals, NIC drivers, eBPF/XDP, OpenStack/Kubernetes dataplanes, and
+performance-sensitive C++ into one coherent toolbox.
 
-Next, I want to deepen:
+Next I want to keep digging into:
 
 - multi-cycle attach/detach, reset, link-flap, and long-running validation for
   `r8169_xdp`;
 - TX-ring-full, RX-refill, DROP/ABORTED/invalid-action, and other fault paths;
 - the boundary between physical-NIC Native XDP and OVS/tap/veth observability;
-- publicly reproducible build, test, and performance evidence.
+- publicly reproducible build, test, and performance evidence. If someone clones
+  a project later, I want them to know what I actually measured—not just see a
+  polished result screenshot.
 
 <div align="center">
   <sub>I like Aqours. Meaningful progress is built one step at a time.</sub>
