@@ -3,18 +3,11 @@
     <img src="./assets/yukino-code-hero-4k.png" width="760" alt="雪之下雪乃在深夜写代码" />
   </a>
 
-  <h1>你好，我是谭开文</h1>
+  <h1>你好，我是谭开文 👋</h1>
 
   <p>
-    桂林电子科技大学硕士研究生<br />
-    Linux 内核网络 · eBPF/XDP · Native 网卡驱动 · 云原生数据面 · C++ 系统
-  </p>
-
-  <p>
-    <img src="https://img.shields.io/badge/Focus-Linux%20Dataplanes-0f766e?style=flat-square" alt="Linux 数据面" />
-    <img src="https://img.shields.io/badge/Research-eBPF%20%2F%20XDP-111827?style=flat-square" alt="eBPF 与 XDP" />
-    <img src="https://img.shields.io/badge/Driver-r8169%20Native%20XDP-b91c1c?style=flat-square" alt="r8169 Native XDP" />
-    <img src="https://img.shields.io/badge/Engineering-Reproducible-2563eb?style=flat-square" alt="可复现工程" />
+    四川成都人，现在在桂林电子科技大学读研二。<br />
+    最近基本都在折腾 Linux 网络、eBPF/XDP、网卡驱动和云平台数据面。
   </p>
 
   <p>
@@ -22,83 +15,91 @@
   </p>
 </div>
 
-## 关于我
+## 我最近在折腾什么
 
-我来自四川成都，现在在桂林电子科技大学读研二。主要做 Linux 网络、
-eBPF/XDP、虚拟化数据面.
+我最想弄明白的问题一直很直接：**一个包到底从哪里进来，经过了什么，为什么会慢，
+又能不能在不破坏原路径的情况下把它加速。**
 
-## 研究方向
+所以我最近做的东西，基本都围绕下面这条路径展开：
 
-我现在主要在看三条线：
+```text
+物理网卡 → 驱动 / NAPI → XDP → Linux 网络栈
+       → tap / veth → OVS → VM / Pod → 后端服务
+```
 
-- **Linux 内核网络和网卡驱动**：关注 RX/TX、DMA、page-pool、NAPI、驱动
-  生命周期，以及 Native XDP 在真实网卡上到底怎样工作；
-- **eBPF/XDP 数据面**：做 DNS cache、流量观测和窄范围的快速路径，比较
-  tc、generic XDP 和 native XDP 在不同挂载点上的差别；
-- **虚拟化和云原生网络**：分析 KVM、OpenStack、Kubernetes、OVS 里的
-  `virtio`、`tap`、`veth`、VXLAN/Geneve、qrouter 等路径。
+我不太满足于“代码能编译”或者“在 veth 里跑通”。功能写完以后，我一般还会把它放到
+真实网卡、OpenStack 虚拟机或者 Kubernetes Pod 里继续跑，看看 QPS、p95/p99、CPU、
+丢包和失败路径到底怎么样。结果不对，就继续往 softirq、tap、OVS、DMA 或驱动里查。
 
+现在主要在啃三块：
 
-## 想找的工作
+- **把重复请求提前回答掉**：在 XDP/tc 上解析协议，命中缓存就直接回包，没命中继续走
+  原来的 Linux、OVS 和后端服务；
+- **把 XDP 真正放进网卡驱动**：不只测 generic XDP，还会继续追 RX buffer、page-pool、
+  DMA ownership、TX ring 和 completion；
+- **把实验放进真实云网络**：研究 `tap`、`veth`、OVS、Geneve/VXLAN、VM 和 Pod 之间的
+  完整路径，而不是只拿一个隔离 netns 的数字下结论。
 
-我希望找 Linux 内核网络、eBPF/XDP、网卡驱动、云原生基础设施或高性能
-C++ 系统研发相关的岗位。
+## 几个我比较想拿出来讲的项目
 
-## 语言和技术栈
+### [eBPF Network Service Cache](https://github.com/Yukinoshita03/ebpf-network-service-cache)
 
-- **最常用的语言**：C/C++（主要写 C++20）、Go、Python；
-- **正在学习**：Rust，希望以后用它补充系统工具和基础设施开发；
-- **系统与网络**：Linux、KVM、eBPF/XDP、TC、NAPI、网卡驱动、OVS、
-  OpenStack、Kubernetes、Docker；
-- **工程工具**：CMake、Make、Git、GDB、Clang/GCC、Shell，以及可复现的
-  netns/bridge/veth 测试环境。
+这是我现在投入最多的项目。思路其实不复杂：对于答案已经知道、而且能明确判断是否过期的
+请求，直接在 XDP 快路径里响应；遇到未知请求、过期项或者解析失败，就原样放行。
 
-## 项目
+目前做了 DNS、通用 UDP、ARP、DHCP、gRPC 和 LDAP/LDAPS 等协议原型，也做了
+OpenStack TAP 和 Kubernetes Pod-veth 的适配。它不会替换应用、CNI 或 OVS，挂错了可以
+卸载，没命中也还能继续走原来的网络路径。
 
-### [r8169-native-xdp](https://github.com/Yukinoshita03/r8169-native-xdp)
+我比较在意的不只是“快了多少”，还包括双方缓存容量是否一致、流量分布是不是同一套、
+失败率和丢包是不是为零，以及 netns 微基准和 VM 端到端结果有没有被混在一起。
 
-这是我最近单独拆出来的仓库，放的是 Linux `r8169` 的 Native XDP 外置驱动
-补丁和源码。最开始只是想验证 XDP 能不能在物理网卡上真正跑起来，做到后面
-才发现最费时间的是 buffer ownership、DMA、TX ring 和 reset 这些细节。
+### [r8169 Native XDP](https://github.com/Yukinoshita03/r8169-native-xdp)
 
-- 基于 Linux 7.2-rc6 提供 Native XDP RX/TX 核心补丁；
-- 提供 Ubuntu 7.0 目标 ABI 的兼容、显式 PCI/BDF 保护和故障注入补丁；
-- 处理 page-pool、DMA ownership、RX replacement、共享 TX ring 和 completion；
-- 发布展开后的 `r8169_main.c` 等驱动源码、可复现构建脚本和验证记录；
-- 在一张 RTL8168H/8111H 类物理网卡上完成 DNS cache `1024/1024` Native-XDP
-  回包验收。
+这个项目一开始只是想验证：XDP 能不能不靠 generic 模式，直接在一张真实的 Realtek 网卡
+驱动里跑起来。做到后面就一路追到了 RX buffer ownership、DMA 同步、page-pool、TX ring、
+reset 和 link flap。
+
+现在已经实现 `XDP_PASS`、`XDP_DROP`、`XDP_ABORTED` 和同网卡 `XDP_TX`，并在真实网卡上
+完成过外部 DNS cache-hit 回包验证。这个仓库我会明确写出硬件、内核和安全边界，不会把
+一张网卡上的实验结果说成所有机器都能直接用。
 
 ### [vnet-dataplane](https://github.com/Yukinoshita03/vnet-dataplane)
 
-这是我的主线项目，也是很多实验的起点：一个面向虚拟化网络路径观测和轻量
-服务加速的 Linux eBPF Agent。
+这是很多实验最早的总仓库。它会发现 `veth`、`tap`、Bridge、OVS 等路径，观察 DNS、
+gRPC、TCP/UDP 流量，并提供一些 XDP/tc 快路径原型。这里还放着 C++20 用户态数据面和
+虚拟网卡驱动实验，比较像我的 Linux 网络试验场。
 
-- 发现并记录 `veth`、`tap`、Bridge、OVS 等虚拟路径和候选挂载点；
-- 观测 DNS、gRPC、TCP、UDP 的路径、时延、服务分类和 attach 状态；
-- 提供 DNS XDP cache、客户端/服务端缓存和 gRPC fast-cache 原型；
-- 包含 `netns + bridge + veth` 可复现实验、C++20 用户态数据面和虚拟网卡
-  驱动原型；
-- 配套 OpenStack/Kubernetes/OVS 的路径探测、tc attach 和数据面实验文档。
+### [campus-net-guard](https://github.com/Yukinoshita03/campus-net-guard)
 
-## 技术栈
+这是从实际问题里拆出来的小工具：用 C++/libcurl 定时检查校园网是否还在线，掉线后按
+Dr.COM 门户参数自动认证，再重新确认网络有没有恢复。它现在有 Linux systemd 部署、
+macOS/Linux CI 和本地 mock 回归测试，真实账号和密码不会放进仓库。
 
-<div align="center">
+## 我做项目时比较在意什么
 
-![C++](https://img.shields.io/badge/C++20-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
-![C](https://img.shields.io/badge/C-A8B9CC?style=for-the-badge&logo=c&logoColor=111827)
-![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=111827)
-![eBPF](https://img.shields.io/badge/eBPF%20%2F%20XDP-111827?style=for-the-badge&logo=linux&logoColor=white)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
-![OpenStack](https://img.shields.io/badge/OpenStack-EF3B2D?style=for-the-badge&logo=openstack&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![CMake](https://img.shields.io/badge/CMake-064F8C?style=for-the-badge&logo=cmake&logoColor=white)
+- **先把路径搞清楚**：程序挂在哪里、包经过哪里、谁拥有这块内存，先说明白再谈优化；
+- **命中快，没命中也得安全**：快路径只处理能证明正确的请求，其他情况回到原路径；
+- **结果要能复现**：保留构建环境、测试命令、CPU/网卡信息、流量模型和原始结果；
+- **负面结果也有用**：性能没提升、尾延迟变差或者出现丢包时，继续找原因，不只挑好看的数字；
+- **尽量放到真环境里测**：netns 适合定位问题，但最后还是要回到真实网卡、VM、Pod 和 OVS。
 
-</div>
+## 平时会用的东西
 
-## 喜欢的动漫
+- 主要写 **C/C++（C++20）**，也用 Go 和 Python 写控制面、测试工具和自动化脚本；
+- 常用 Linux、eBPF/XDP、tc、NAPI、KVM、OVS、OpenStack、Kubernetes 和 Docker；
+- 构建和排障会用 CMake、Make、Git、GDB、Clang/GCC、Shell、perf、bpftool、tcpdump；
+- Rust 还在学，希望以后能拿它写一些更稳的系统工具。
 
-我喜欢《Re:从零开始的异世界生活》（Re:Zero）和《我的青春恋爱物语果然有
-问题》（春物），尤其喜欢雪之下雪乃！！！
+## 接下来
 
+我想继续往 Linux 内核网络、eBPF/XDP、网卡驱动、云基础设施和高性能 C++ 这条线走。
+比起只写业务接口，我更喜欢能接触真实机器、真实数据面，还能一路把问题查到内核和驱动的工作。
 
+如果你也在做这些方向，欢迎一起交流代码、实验和那些“看起来不该出问题，但它就是出问题了”
+的网络现场。
+
+## 题外话
+
+我喜欢《Re:从零开始的异世界生活》和《我的青春恋爱物语果然有问题》，尤其喜欢雪之下雪乃。
+这个 GitHub 名字也是这么来的。
