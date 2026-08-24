@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/Yukinoshita03/Yukinoshita03">
-    <img src="./assets/yukino-code-hero-4k.png" width="760" alt="雪之下雪乃在深夜写代码" />
+    <img src="./assets/yukino-hachiman-profile-banner-v3-macbook.png" width="760" alt="雪乃与比企谷八幡在黄昏教室使用 MacBook" />
   </a>
 
   <h1>你好，我是谭开文</h1>
